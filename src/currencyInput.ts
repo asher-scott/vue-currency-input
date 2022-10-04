@@ -1,7 +1,7 @@
 import CurrencyFormat, { DECIMAL_SEPARATORS } from './currencyFormat'
-import { AutoDecimalDigitsInputMask, DefaultInputMask, InputMask } from './inputMask'
+import { AutoDecimalDigitsInputMask, DefaultInputMask, type InputMask } from './inputMask'
 import { count } from './utils'
-import { CurrencyDisplay, CurrencyInputOptions, CurrencyInputValue, ValueScaling } from './api'
+import { CurrencyDisplay, type CurrencyInputOptions, type CurrencyInputValue, ValueScaling } from './api'
 
 export const DEFAULT_OPTIONS = {
   locale: undefined,

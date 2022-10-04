@@ -1,5 +1,5 @@
 import { escapeRegExp, substringBefore } from './utils'
-import { CurrencyDisplay, CurrencyFormatOptions } from './api'
+import { CurrencyDisplay, type CurrencyFormatOptions } from './api'
 
 export const DECIMAL_SEPARATORS = [',', '.', '٫']
 export const INTEGER_PATTERN = '(0|[1-9]\\d*)'
@@ -22,14 +22,20 @@ export default class CurrencyFormat {
   constructor(options: CurrencyFormatOptions) {
     const { currency, currencyDisplay, locale, precision, accountingSign } = options
     this.locale = locale
-    this.options = {
-      style: 'currency',
-      currency,
-      currencySign: accountingSign ? 'accounting' : undefined,
-      currencyDisplay: currencyDisplay !== CurrencyDisplay.hidden ? currencyDisplay : undefined
+
+    if (typeof currency === 'string') {
+      this.options = {
+        style: 'currency',
+        currency,
+        currencySign: accountingSign ? 'accounting' : undefined,
+        currencyDisplay: currencyDisplay !== CurrencyDisplay.hidden ? currencyDisplay : undefined
+      }
+    } else {
+      this.options = {}
     }
+
     const numberFormat = new Intl.NumberFormat(locale, this.options)
-    const formatParts = numberFormat.formatToParts(123456)
+    const formatParts = numberFormat.formatToParts(123456.5)
 
     this.currency = formatParts.find(({ type }) => type === 'currency')?.value
     this.digits = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map((i) => i.toLocaleString(locale))
@@ -53,10 +59,17 @@ export default class CurrencyFormat {
       return str.substring(str.lastIndexOf(this.decimalSymbol ? this.digits[0] : this.digits[1]) + 1)
     }
 
-    this.prefix = getPrefix(numberFormat.format(1))
-    this.suffix = getSuffix(numberFormat.format(1))
+    if (typeof currency === 'string') {
+      this.prefix = getPrefix(numberFormat.format(1))
+      this.suffix = getSuffix(numberFormat.format(1))
+      this.negativeSuffix = getSuffix(numberFormat.format(-1))
+    } else {
+      this.prefix = currency?.prefix ?? ''
+      this.suffix = currency?.suffix ?? ''
+      this.negativeSuffix = ''
+    }
+
     this.negativePrefix = getPrefix(numberFormat.format(-1))
-    this.negativeSuffix = getSuffix(numberFormat.format(-1))
   }
 
   parse(str: string | null): number | null {
@@ -105,7 +118,11 @@ export default class CurrencyFormat {
       maximumFractionDigits: this.maximumFractionDigits
     }
   ): string {
-    return value != null ? value.toLocaleString(this.locale, { ...this.options, ...options }) : ''
+    if (this.options.currency) {
+      return value != null ? value.toLocaleString(this.locale, { ...this.options, ...options }) : ''
+    } else {
+      return value != null ? `${this.prefix}${value.toLocaleString(this.locale, { ...options })}${this.suffix}` : ''
+    }
   }
 
   toFraction(str: string): string {

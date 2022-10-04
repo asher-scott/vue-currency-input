@@ -1,6 +1,6 @@
 import { CurrencyInput } from './currencyInput'
-import { ComponentPublicInstance, computed, ComputedRef, getCurrentInstance, Ref, ref, version, watch } from 'vue'
-import { CurrencyInputOptions, CurrencyInputValue, UseCurrencyInput } from './api'
+import { type ComponentPublicInstance, computed, type ComputedRef, getCurrentInstance, type Ref, ref, version, watch } from 'vue'
+import type { CurrencyInputOptions, CurrencyInputValue, UseCurrencyInput } from './api'
 
 const findInput = (el: HTMLElement | null) => (el?.matches('input') ? el : el?.querySelector('input')) as HTMLInputElement
 

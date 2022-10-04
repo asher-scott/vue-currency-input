@@ -1,5 +1,5 @@
 import { removeLeadingZeros } from './utils'
-import CurrencyFormat from './currencyFormat'
+import type CurrencyFormat from './currencyFormat'
 
 abstract class AbstractInputMask {
   protected currencyFormat: CurrencyFormat

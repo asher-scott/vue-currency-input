@@ -1,4 +1,4 @@
-import { Ref } from 'vue'
+import type { Ref } from 'vue'
 
 export interface CurrencyInputValue {
   number: number | null
@@ -25,9 +25,14 @@ export enum ValueScaling {
   billions = 'billions'
 }
 
+export interface CustomCurrency {
+  prefix?: string
+  suffix?: string
+}
+
 export interface CurrencyFormatOptions {
   locale?: string
-  currency: string
+  currency: string | CustomCurrency
   currencyDisplay?: CurrencyDisplay
   precision?: NumberRange | number
   accountingSign?: boolean
